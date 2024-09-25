@@ -58,6 +58,21 @@ def login(request):
         data1=request.session.get('data')
         print(data1)
         print(data1["name"],data1["email"],data1["contact"],data1["password"])
+        if data1['email']==email:
+            if data1['password']==password:
+                my_data={
+                    'nm':data1['name'],
+                    'em':data1['email'],
+                    'con':data1['contact'],
+                    'pas':data1['password']
+                }
+                return render(request,'dashboard.html',my_data)
+            else:
+                msg="Password is inccorrect"
+                return render(request,'login.html',{'msg':msg})
+        else:
+            msg="Email is incorrect"
+            return render(request,'login.html',{'msg':msg})
     else:
         return render(request,'login.html')
 
@@ -84,12 +99,19 @@ def registerdata(request):
     response.set_cookie("password",password)
     return response
 def logout(request):
-    response=render(request,'home.html')
-    response.delete_cookie('name')
-    response.delete_cookie('contact')
-    response.delete_cookie('email')
-    response.delete_cookie('password')
-    return response
+    # response=render(request,'home.html')
+    # response.delete_cookie('name')
+    # response.delete_cookie('contact')
+    # response.delete_cookie('email')
+    # response.delete_cookie('password')
+    # return response
+    # return render(request,'home.html')
+    if request.session:
+        request.session.flush()
+        return render(request,'home.html')
+    else:
+        msg="Session Data Not Found"
+        return render(request, 'login.html')
 
  
 
